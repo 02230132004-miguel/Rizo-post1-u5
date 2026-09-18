@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Reserva de Laboratorio | Universidad</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --info: #0284c7;
+            --info-light: #f0f9ff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
+            color: var(--gray-800);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--gray-900);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Flash Error */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert-danger {
+            background-color: var(--danger-light);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 860px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--gray-200);
+            padding: 2rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .card-subtitle {
+            font-size: 0.88rem;
+            color: var(--gray-600);
+            margin-top: 0.25rem;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.4rem;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.9rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: var(--gray-800);
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .field-error {
+            color: var(--danger);
+            font-size: 0.78rem;
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        /* Policy Card */
+        .policy-card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+        }
+
+        .policy-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            color: var(--info);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .policy-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .policy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+            line-height: 1.4;
+        }
+
+        .policy-icon {
+            color: var(--info);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Footer */
+        footer {
+            background: #ffffff;
+            border-top: 1px solid var(--gray-200);
+            padding: 1.5rem 2rem;
+            margin-top: auto;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="/reservas" class="brand">
+                <div class="brand-icon">RL</div>
+                <div>
+                    <div class="brand-title">Sistema de Reservas de Laboratorios</div>
+                </div>
+            </a>
+            <a href="/reservas" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.82rem;">
+                ← Volver al Listado
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Flash Error Message -->
+        <div th:if="${error}" class="alert alert-danger" id="alert-error-form">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            <span th:text="${error}">Mensaje de error</span>
+        </div>
+
+        <div class="grid-layout">
+            
+            <!-- Reservation Form Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">Registrar Nueva Reserva</h1>
+                    <p class="card-subtitle">Complete la información requerida para programar el uso de las instalaciones.</p>
+                </div>
+
+                <form th:action="@{/reservas}" th:object="${reserva}" method="post" id="form-reserva">
+
+                    <!-- Laboratorio -->
+                    <div class="form-group">
+                        <label for="laboratorio" class="required">Laboratorio a Reservar</label>
+                        <select id="laboratorio" th:field="*{laboratorio.id}" required>
+                            <option value="">-- Seleccione un laboratorio disponible --</option>
+                            <option th:each="lab : ${laboratorios}"
+                                    th:value="${lab.id}"
+                                    th:text="${lab.nombre} + ' — ' + ${lab.ubicacion} + ' (Capacidad: ' + ${lab.capacidad} + ')'">
+                                Lab de Software
+                            </option>
+                        </select>
+                        <div class="field-error" th:if="${#fields.hasErrors('laboratorio')}" th:errors="*{laboratorio}"></div>
+                    </div>
+
+                    <!-- Datos Solicitante -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombreSolicitante" class="required">Nombre del Solicitante</label>
+                            <input type="text" id="nombreSolicitante" th:field="*{nombreSolicitante}" placeholder="Ej. Dr. Miguel Rizo" required />
+                            <div class="field-error" th:if="${#fields.hasErrors('nombreSolicitante')}" th:errors="*{nombreSolicitante}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="correoSolicitante" class="required">Correo Institucional</label>
+                            <input type="email" id="correoSolicitante" th:field="*{correoSolicitante}" placeholder="mrizo@universidad.edu" required />
+                            <div class="field-error" th:if="${#fields.hasErrors('correoSolicitante')}" th:errors="*{correoSolicitante}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Horarios -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inicio" class="required">Fecha y Hora de Inicio</label>
+                            <input type="datetime-local" id="inicio" th:field="*{inicio}" required />
+                            <div class="field-error" th:if="${#fields.hasErrors('inicio')}" th:errors="*{inicio}"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fin" class="required">Fecha y Hora de Fin</label>
+                            <input type="datetime-local" id="fin" th:field="*{fin}" required />
+                            <div class="field-error" th:if="${#fields.hasErrors('fin')}" th:errors="*{fin}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Motivo -->
+                    <div class="form-group">
+                        <label for="motivo" class="required">Motivo de la Reserva</label>
+                        <textarea id="motivo" th:field="*{motivo}" rows="3" placeholder="Detalle la actividad académica o de investigación a desarrollar..." required></textarea>
+                        <div class="field-error" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <a href="/reservas" class="btn btn-outline">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-reserva">Confirmar y Guardar Reserva</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Policies Side Card -->
+            <aside>
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                        <span>Políticas del Servicio</span>
+                    </div>
+                    <ul class="policy-list">
+                        <li class="policy-item">
+                            <span class="policy-icon">🕒</span>
+                            <div><strong>Horario Hábil:</strong> Las reservas deben realizarse únicamente entre las <strong>07:00</strong> y las <strong>21:00 hrs</strong>.</div>
+                        </li>
+                        <li class="policy-item">
+                            <span class="policy-icon">⏱️</span>
+                            <div><strong>Duración:</strong> Mínimo <strong>30 minutos</strong> y máximo <strong>3 horas</strong> continuas.</div>
+                        </li>
+                        <li class="policy-item">
+                            <span class="policy-icon">📅</span>
+                            <div><strong>Mismo Día:</strong> El inicio y fin deben pertenecer estrictamente a la misma fecha.</div>
+                        </li>
+                        <li class="policy-item">
+                            <span class="policy-icon">🚫</span>
+                            <div><strong>No Solapamiento:</strong> El sistema previene automáticamente colisiones de horario en un mismo laboratorio.</div>
+                        </li>
+                        <li class="policy-item">
+                            <span class="policy-icon">🔒</span>
+                            <div><strong>Cancelación:</strong> No es posible cancelar reservas cuyo horario ya haya iniciado o transcurrido.</div>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div>Sistema Universitario de Reservas de Laboratorios • Spring Boot 3.2.3 & Java 17</div>
+    </footer>
+
+</body>
+</html>

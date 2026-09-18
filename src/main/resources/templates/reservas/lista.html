@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas de Laboratorios | Universidad</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --warning: #f59e0b;
+            --warning-light: #fffbeb;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
+            color: var(--gray-800);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--gray-900);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #4f46e5 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            font-weight: 400;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger-sm {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .btn-danger-sm:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary-sm {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Hero / Stats Banner */
+        .hero-banner {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            padding: 1.75rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .hero-text h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-text p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .stat-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* Flash Messages */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert-success {
+            background-color: var(--success-light);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background-color: var(--danger-light);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Data Card */
+        .card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.75rem;
+            background: #ffffff;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--gray-50);
+            padding: 0.9rem 1.25rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            font-size: 0.88rem;
+            color: var(--gray-800);
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-CONFIRMADA {
+            background-color: var(--success-light);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-PENDIENTE {
+            background-color: var(--warning-light);
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-CANCELADA {
+            background-color: var(--gray-100);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-300);
+        }
+
+        .badge-lab {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            border: 1px solid #bfdbfe;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--gray-600);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        /* Footer */
+        footer {
+            background: #ffffff;
+            border-top: 1px solid var(--gray-200);
+            padding: 1.5rem 2rem;
+            margin-top: auto;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="/reservas" class="brand">
+                <div class="brand-icon">RL</div>
+                <div>
+                    <div class="brand-title">Sistema de Reservas de Laboratorios</div>
+                    <div class="brand-subtitle">Facultad de Ingeniería • Post-contenido U5</div>
+                </div>
+            </a>
+            <div class="nav-actions">
+                <a href="/reservas/nueva" class="btn btn-primary" id="btn-nueva-reserva">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Nueva Reserva
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Flash Messages -->
+        <div th:if="${mensaje}" class="alert alert-success" id="alert-mensaje-exito">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span th:text="${mensaje}">Operación realizada con éxito</span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" id="alert-mensaje-error">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            <span th:text="${error}">Ha ocurrido un error en la solicitud</span>
+        </div>
+
+        <!-- Hero / Metrics Banner -->
+        <section class="hero-banner">
+            <div class="hero-text">
+                <h1>Panel de Reservas Activas</h1>
+                <p>Monitoreo y administración del uso de laboratorios universitarios.</p>
+            </div>
+            <div class="stats-group">
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${laboratorios != null ? laboratorios.size() : 0}">3</div>
+                    <div class="stat-label">Laboratorios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${reservas != null ? reservas.size() : 0}">1</div>
+                    <div class="stat-label">Reservas Totales</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reservations Table Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Listado General de Reservaciones</h2>
+                <span style="font-size: 0.85rem; color: var(--gray-600);">Horario institucional: 07:00 a 21:00 hrs</span>
+            </div>
+
+            <div class="table-responsive">
+                <table id="tabla-reservas" th:if="${reservas != null and not #lists.isEmpty(reservas)}">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Laboratorio</th>
+                            <th>Solicitante</th>
+                            <th>Contacto</th>
+                            <th>Fecha y Hora Inicio</th>
+                            <th>Fecha y Hora Fin</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                            <th style="text-align: center;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${reservas}">
+                            <td style="font-weight: 600; color: var(--gray-600);" th:text="'#' + ${r.id}">#1</td>
+                            <td>
+                                <span class="badge badge-lab" th:text="${r.laboratorio.nombre}">Lab Redes</span>
+                                <div style="font-size: 0.75rem; color: var(--gray-600); margin-top: 2px;" th:text="${r.laboratorio.ubicacion} + ' (Cap: ' + ${r.laboratorio.capacidad} + ')'">Edificio A, Sala 101</div>
+                            </td>
+                            <td style="font-weight: 500;" th:text="${r.nombreSolicitante}">Dr. Pérez</td>
+                            <td style="font-size: 0.82rem; color: var(--gray-600);" th:text="${r.correoSolicitante}">solicitante@universidad.edu</td>
+                            <td style="font-weight: 500;" th:text="${#temporals.format(r.inicio, 'dd/MM/yyyy HH:mm')}">18/09/2026 09:00</td>
+                            <td style="font-weight: 500;" th:text="${#temporals.format(r.fin, 'dd/MM/yyyy HH:mm')}">18/09/2026 11:00</td>
+                            <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" th:title="${r.motivo}" th:text="${r.motivo}">Práctica académica</td>
+                            <td>
+                                <span th:class="'badge badge-' + ${r.estado}" th:text="${r.estado}">CONFIRMADA</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <form th:if="${r.estado.name() != 'CANCELADA'}"
+                                      th:action="@{/reservas/{id}/cancelar(id=${r.id})}"
+                                      method="post"
+                                      onsubmit="return confirm('¿Está seguro de que desea cancelar esta reserva?');">
+                                    <button type="submit" class="btn btn-danger-sm">
+                                        Cancelar
+                                    </button>
+                                </form>
+                                <span th:if="${r.estado.name() == 'CANCELADA'}" style="font-size: 0.75rem; color: var(--gray-600);">
+                                    Anulada
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${reservas == null or #lists.isEmpty(reservas)}" class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <h3>No hay reservas registradas</h3>
+                    <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Cree una nueva reserva para comenzar la gestión de los laboratorios.</p>
+                    <a href="/reservas/nueva" class="btn btn-primary">Registrar Primera Reserva</a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div>Sistema Universitario de Reservas de Laboratorios • Spring Boot 3.2.3 & Java 17</div>
+        <div class="footer-links">
+            <a href="/api/reservas" target="_blank">API REST Reservas (JSON)</a>
+            <a href="/api/laboratorios" target="_blank">API REST Laboratorios (JSON)</a>
+            <a href="/h2-console" target="_blank">Consola H2 Database</a>
+        </div>
+    </footer>
+
+</body>
+</html>
